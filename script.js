@@ -58,8 +58,8 @@ async function fetchFruitData(fruit) {
         const respData = await fetch(`https://fruit-api-5v0j.onrender.com/fruits/${fruit}`);
         const respImg = await fetch(`https://pixabay.com/api/?q=${fruit}+fruit&key=${apiKey}`);
 
-        if (resp.ok && respImg.ok) {
-            const data = await resp.json();
+        if (respData.ok && respImg.ok) {
+            const data = await respData.json();
             const imgData = await respImg.json();
             addFruit(data, imgData);
         } else {
