@@ -1,24 +1,69 @@
-const fruitForm = document.querySelector('#inputSection form')
-const fruitList = document.querySelector('#fruitSection ul')
+const fruitForm = document.querySelector("#inputSection form");
+const fruitList = document.querySelector("#fruitSection ul");
+const fruitNutrition = document.querySelector("#nutritionSection p");
+
+
+let cal = 0
+const fruitCal = {};
+const apiKey = "58059137-c84e0b00ba703056395c58e25";
+
 fruitForm.addEventListener('submit', extractFruit);
-console.log(fruitList);
 
 function extractFruit(e){
-    e.preventDefault()
-    addFruit(e.target.fruitInput.value);
-    e.target.fruitInput.value = ""
+    e.preventDefault();
+    fetchFruitData(e.target.fruitInput.value);
+    e.target.fruitInput.value = "";
 }
 
 function addFruit(fruit){
     // not adding empty inputs
     // if (!fruit.trim()) return;
     const li = document.createElement('li');
-    li.textContent = fruit;
+    li.textContent = fruit.name;
+    li.dataset.calories = fruit.nutritions.calories;
     //  when you click on the fruit it will be removed
     li.addEventListener('click', removeFruit)
     fruitList.appendChild(li);
+
+    cal += fruit.nutritions.calories
+    fruitNutrition.textContent = cal
 }
 
 function removeFruit(e){
-    e.target.remove()
+    const li = e.currentTarget;
+    cal -= Number(li.dataset.calories);
+    fruitNutrition.textContent = cal;
+    li.remove();
+}
+
+// function fetchFruitData(fruit){
+//     fetch(`https://fruit-api-5v0j.onrender.com/fruits/${fruit}`)
+//     .then(processResponse)
+//     .then(data => addFruit(data))
+//     .catch(e => console.log(e))
+// }
+
+
+// function processResponse(resp){
+//     if(resp.ok){
+//         return resp.json}
+//         else {
+//             throw "Error: htp status code =" + resp.status
+//         }
+//     }
+    
+
+async function fetchFruitData(fruit) {
+    try {
+        const resp = await fetch(`https://fruit-api-5v0j.onrender.com/fruits/${fruit}`);
+
+        if (resp.ok) {
+            const data = await resp.json();
+            addFruit(data);
+        } else {
+            throw "Error: http status code = " + resp.status;
+        }
+    } catch (e) {
+        console.log(e);
+    }
 }
