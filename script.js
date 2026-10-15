@@ -55,13 +55,15 @@ function removeFruit(e){
 
 async function fetchFruitData(fruit) {
     try {
-        const resp = await fetch(`https://fruit-api-5v0j.onrender.com/fruits/${fruit}`);
+        const respData = await fetch(`https://fruit-api-5v0j.onrender.com/fruits/${fruit}`);
+        const respImg = await fetch(`https://pixabay.com/api/?q=${fruit}+fruit&key=${apiKey}`);
 
-        if (resp.ok) {
+        if (resp.ok && respImg.ok) {
             const data = await resp.json();
-            addFruit(data);
+            const imgData = await respImg.json();
+            addFruit(data, imgData);
         } else {
-            throw "Error: http status code = " + resp.status;
+            throw "Something has gone wrong with one of the API requests = " + resp.status;
         }
     } catch (e) {
         console.log(e);
